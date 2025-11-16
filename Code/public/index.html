@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AquaSync — Smart Water Network Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Socket.IO client (served from server) -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">Aq</div>
+        <div>
+          <h1>AquaSync</h1>
+          <div class="subtitle">Smart Water Network Monitor — real-time telemetry</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="chip">Nodes: <strong id="nodeCount">0</strong></div>
+        <div class="chip">Active Alerts: <strong id="alertCount">0</strong></div>
+        <div class="chip">Avg Purification: <strong id="avgPur">0%</strong></div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card overview">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 style="margin:0">Network Overview</h3>
+          <div class="subtitle">Live • Socket.IO</div>
+        </div>
+
+        <div class="kpis" style="margin-top:12px">
+          <div class="kpi">
+            <h3>Total Water Available</h3>
+            <div class="big" id="totalWater">-- ML</div>
+            <div class="small subtitle">Million Liters across monitored regions</div>
+          </div>
+          <div class="kpi">
+            <h3>Avg Pollution Index</h3>
+            <div class="big" id="avgPoll">-- PPM</div>
+            <div class="small subtitle">Lower is better</div>
+          </div>
+          <div class="kpi">
+            <h3>Purification Progress</h3>
+            <div class="big" id="purProg">--%</div>
+            <div class="small subtitle">Active plants progress</div>
+          </div>
+        </div>
+
+        <div class="card map-card" style="margin-top:12px;padding:0;">
+          <div id="map" style="width:100%;height:100%"></div>
+        </div>
+
+        <div class="charts">
+          <div class="chart-small card">
+            <h4 style="margin:0">Water Level (last 20)</h4>
+            <canvas id="waterChart" height="120"></canvas>
+          </div>
+          <div class="chart-small card">
+            <h4 style="margin:0">Pollution Index (last 20)</h4>
+            <canvas id="pollChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <h3 style="margin:0">Regions</h3>
+          <div class="subtitle" style="margin-top:6px">Click a region to focus</div>
+          <div class="region-list" id="regions"></div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0">Purification Plants</h3>
+          <div class="subtitle" style="margin-top:6px">Progresses & status</div>
+          <div id="plants" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <!-- <select id="purRegion" style="flex:1;padding:8px;border-radius:8px;background:transparent;color:inherit">
+              <option value="">Select region</option>
+            </select> -->
+            <!-- <button id="purBtn">Trigger Purify</button> -->
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0">Alerts</h3>
+          <div class="subtitle" style="margin-top:6px">Critical events & recommendations</div>
+          <div class="alerts" id="alerts" style="margin-top:8px"></div>
+        </div>
+        <!-- Add this where you want the pollution trend chart to appear -->
+    <div class="chart-small card">
+        <h4 style="margin:0">Pollution Trend (AQI)</h4>
+        <canvas id="pollTrendChart" height="120"></canvas>
+    </div>
+
+
+      </aside>
+    </div>
+
+    <footer>
+      Server simulates sensors and broadcasts telemetry via Socket.IO. Use POST /api/regions/:id/purify or the UI button to trigger purification.
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
